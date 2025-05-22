@@ -56,11 +56,19 @@ To make the Trello MCP available in all your projects:
                 "-y",
                 "@xenral/trello-mcp",
                 "start"
-            ]
+            ],
+            "env": {
+                "TRELLO_API_KEY": "your-api-key-here",
+                "TRELLO_TOKEN": "your-token-here",
+                "TRELLO_BOARD_ID": "your-board-id-here",
+                "PORT": "3000"
+            }
         }
     }
 }
 ```
+
+Replace the placeholder values with your actual Trello API credentials.
 
 #### Option B: Add to a specific project
 
@@ -68,6 +76,29 @@ If you only need the Trello MCP in a single project:
 
 1. Create a `.cursor` directory in your project root if it doesn't exist
 2. Create or edit `.cursor/mcp.json` with the same configuration as above
+
+#### Using with an existing .env file
+
+If you already have your Trello credentials in a `.env` file and prefer to use that:
+
+```json
+{
+    "mcpServers": {
+        "trello-mcp": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@xenral/trello-mcp",
+                "start",
+                "--env-file",
+                "${workspaceFolder}/.env"
+            ]
+        }
+    }
+}
+```
+
+This approach will use the `.env` file in your project root to load the credentials.
 
 ### 4. Start the MCP Server
 
@@ -219,7 +250,7 @@ mcp_trello-mcp_set_active_board({
 ### Common Issues
 
 1. **Connection Errors**: Make sure the Trello MCP server is running at the specified port
-2. **Authentication Errors**: Verify your API key and token in the `.env` file
+2. **Authentication Errors**: Verify your API key and token in the configuration
 3. **"Board not found" Errors**: Check that the board ID in your configuration is correct
 
 ### Verifying Server Status
@@ -238,6 +269,13 @@ If Cursor doesn't detect your MCP server:
 1. Go to Settings > MCP and click the refresh button
 2. Verify your `mcp.json` file has the correct configuration
 3. Try restarting Cursor
+
+### API Credential Issues
+
+If you're experiencing authentication problems:
+1. Ensure your Trello API key and token are correct and have the necessary permissions
+2. Check that the credentials are properly passed in the configuration
+3. Try regenerating your Trello token if issues persist
 
 ## Examples of Successful Workflows
 

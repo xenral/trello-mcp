@@ -72,6 +72,9 @@ npx trello-mcp start
 
 # Specify a custom port
 trello-mcp start --port 8080
+
+# Use a specific .env file
+trello-mcp start --env-file /path/to/.env
 ```
 
 ## Using with Claude in Cursor IDE
@@ -103,16 +106,45 @@ trello-mcp start --port 8080
                    "-y",
                    "@xenral/trello-mcp",
                    "start"
-               ]
+               ],
+               "env": {
+                   "TRELLO_API_KEY": "your-api-key-here",
+                   "TRELLO_TOKEN": "your-token-here",
+                   "TRELLO_BOARD_ID": "your-board-id-here",
+                   "PORT": "3000"
+               }
            }
        }
    }
    ```
 
+   Replace the placeholder values with your actual Trello API credentials.
+
    **Option B: Add to a specific project**
    
    1. Create a `.cursor` directory in your project root
    2. Create a `.cursor/mcp.json` file with the same configuration as above
+
+   **Option C: Using with an existing .env file**
+
+   If you already have your Trello credentials in a `.env` file and prefer to use that:
+
+   ```json
+   {
+       "mcpServers": {
+           "trello-mcp": {
+               "command": "npx",
+               "args": [
+                   "-y",
+                   "@xenral/trello-mcp",
+                   "start",
+                   "--env-file",
+                   "${workspaceFolder}/.env"
+               ]
+           }
+       }
+   }
+   ```
 
 4. In Cursor Settings > MCP, click the refresh button to detect the new MCP server
 
