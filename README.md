@@ -85,16 +85,40 @@ trello-mcp start --port 8080
 
 2. Create a `.env` file with your Trello credentials (see Configuration section)
 
-3. Start the Trello MCP server:
-   ```bash
-   trello-mcp start
+3. Add the Trello MCP to Cursor by either:
+
+   **Option A: Add globally (recommended)**
+   
+   1. Go to Cursor Settings > MCP
+   2. Click "Add new global MCP server"
+   3. This will open the `~/.cursor/mcp.json` file
+   4. Add the Trello MCP configuration:
+
+   ```json
+   {
+       "mcpServers": {
+           "trello-mcp": {
+               "command": "npx",
+               "args": [
+                   "-y",
+                   "@xenral/trello-mcp",
+                   "start"
+               ]
+           }
+       }
+   }
    ```
 
-4. In Cursor IDE, open the Claude AI Assistant panel
+   **Option B: Add to a specific project**
+   
+   1. Create a `.cursor` directory in your project root
+   2. Create a `.cursor/mcp.json` file with the same configuration as above
+
+4. In Cursor Settings > MCP, click the refresh button to detect the new MCP server
 
 5. Configure Claude to use the Trello MCP by adding the following to your custom instructions:
    ```
-   You have access to a Trello integration via MCP at http://localhost:3000/mcp
+   You have access to a Trello integration via MCP.
    When helping me manage tasks, you can create, update, and organize Trello cards.
    ```
 

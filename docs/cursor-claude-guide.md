@@ -34,22 +34,61 @@ To get your Trello API credentials:
 2. Generate a Token using your API Key
 3. Find your Board ID in the URL of your Trello board: `https://trello.com/b/{BOARD_ID}/{board-name}`
 
-### 3. Start the Trello MCP Server
+### 3. Adding Trello MCP to Cursor
 
-Run the following command to start the server:
+There are two ways to add the Trello MCP server to Cursor:
+
+#### Option A: Add globally (recommended)
+
+To make the Trello MCP available in all your projects:
+
+1. Go to Cursor Settings > MCP
+2. Click "Add new global MCP server"
+3. This will open the `~/.cursor/mcp.json` file
+4. Add the Trello MCP configuration:
+
+```json
+{
+    "mcpServers": {
+        "trello-mcp": {
+            "command": "npx",
+            "args": [
+                "-y",
+                "@xenral/trello-mcp",
+                "start"
+            ]
+        }
+    }
+}
+```
+
+#### Option B: Add to a specific project
+
+If you only need the Trello MCP in a single project:
+
+1. Create a `.cursor` directory in your project root if it doesn't exist
+2. Create or edit `.cursor/mcp.json` with the same configuration as above
+
+### 4. Start the MCP Server
+
+After adding the configuration:
+
+1. Go back to Cursor Settings > MCP 
+2. Click the refresh button to detect the new MCP server
+3. The Trello MCP server will start automatically when needed
+
+Alternatively, you can start the server manually:
 
 ```bash
 trello-mcp start
 ```
 
-The server will start at `http://localhost:3000/mcp` by default.
+### 5. Configure Claude in Cursor
 
-### 4. Configure Claude in Cursor
-
-Open Cursor IDE and add the following to your Claude custom instructions:
+In Cursor, add the following to your Claude custom instructions:
 
 ```
-You have access to a Trello integration via MCP at http://localhost:3000/mcp.
+You have access to a Trello integration via MCP.
 When I ask about tasks or project management, you can interact with my Trello boards to:
 1. View lists and cards
 2. Create new cards
@@ -192,6 +231,13 @@ curl http://localhost:3000/health
 ```
 
 You should receive a response indicating the server is running.
+
+### MCP Server Not Found in Cursor
+
+If Cursor doesn't detect your MCP server:
+1. Go to Settings > MCP and click the refresh button
+2. Verify your `mcp.json` file has the correct configuration
+3. Try restarting Cursor
 
 ## Examples of Successful Workflows
 
