@@ -10,19 +10,20 @@ A [Model Context Protocol](https://github.com/anthropics/model-context-protocol)
 * **Input Validation**: Robust validation for all API inputs with Zod
 * **Error Handling**: Graceful error handling with informative messages
 * **Dynamic Board Selection**: Switch between boards and workspaces without restarting
+* **Claude & Cursor Integration**: Ready to use with Claude in Cursor IDE
 
 ## Installation
 
 ### Global Installation
 
 ```bash
-npm install -g @trello-mcp/server
+npm install -g @xenral/trello-mcp
 ```
 
 ### Local Installation
 
 ```bash
-npm install @trello-mcp/server
+npm install @xenral/trello-mcp
 ```
 
 ## Configuration
@@ -73,9 +74,87 @@ npx trello-mcp start
 trello-mcp start --port 8080
 ```
 
-### Using with AI Assistants
+## Using with Claude in Cursor IDE
 
-Configure your AI assistant to use the MCP endpoint at `http://localhost:3000/mcp` (or your custom port).
+### Setup in Cursor
+
+1. Install the Trello MCP server:
+   ```bash
+   npm install -g @xenral/trello-mcp
+   ```
+
+2. Create a `.env` file with your Trello credentials (see Configuration section)
+
+3. Start the Trello MCP server:
+   ```bash
+   trello-mcp start
+   ```
+
+4. In Cursor IDE, open the Claude AI Assistant panel
+
+5. Configure Claude to use the Trello MCP by adding the following to your custom instructions:
+   ```
+   You have access to a Trello integration via MCP at http://localhost:3000/mcp
+   When helping me manage tasks, you can create, update, and organize Trello cards.
+   ```
+
+### Example Claude Prompts
+
+Here are some examples of how to ask Claude to interact with your Trello boards:
+
+- "Show me all the lists on my current Trello board"
+- "Create a new card titled 'Implement login feature' in the 'To Do' list"
+- "Move the 'Fix navigation bug' card to the 'In Progress' list"
+- "Show me all cards in the 'Code Review' list"
+- "Update the 'Refactor authentication' card to include API endpoints in the description"
+
+### MCP Tool Reference in Cursor
+
+Claude in Cursor can use the following Trello MCP tools:
+
+```typescript
+// Get all lists from the active board
+mcp_trello-mcp_get_lists({})
+
+// Get all cards in a specific list
+mcp_trello-mcp_get_cards_by_list_id({ 
+  listId: "LIST_ID" 
+})
+
+// Add a new card to a list
+mcp_trello-mcp_add_card_to_list({ 
+  listId: "LIST_ID",
+  name: "Card Title",
+  description: "Card description",
+  dueDate: "2023-12-31T12:00:00Z" // optional
+})
+
+// Update a card's details
+mcp_trello-mcp_update_card_details({ 
+  cardId: "CARD_ID",
+  name: "Updated Title", // optional
+  description: "Updated description" // optional
+})
+
+// Move a card to a different list
+mcp_trello-mcp_move_card({ 
+  cardId: "CARD_ID",
+  listId: "TARGET_LIST_ID" 
+})
+
+// Get recent activity on the board
+mcp_trello-mcp_get_recent_activity({
+  limit: 10 // optional
+})
+
+// Change active board
+mcp_trello-mcp_set_active_board({ 
+  boardId: "BOARD_ID" 
+})
+
+// List available boards
+mcp_trello-mcp_list_boards({})
+```
 
 ## Available Tools
 
@@ -137,6 +216,20 @@ Update an existing card's details.
 }
 ```
 
+### move_card
+
+Move a card to a different list.
+
+```json
+{
+  "name": "move_card",
+  "arguments": {
+    "cardId": "string",
+    "listId": "string"
+  }
+}
+```
+
 ### get_recent_activity
 
 Fetch recent activity on the currently active board.
@@ -163,6 +256,49 @@ Set the active board for future operations.
 }
 ```
 
+### list_boards
+
+Get a list of all available boards.
+
+```json
+{
+  "name": "list_boards",
+  "arguments": {}
+}
+```
+
+## Workflow Example: Project Management with Claude and Trello
+
+Here's a complete workflow example of using Claude in Cursor with Trello MCP:
+
+1. **Start your day by asking Claude to summarize your Trello board**:
+   ```
+   "Show me all lists and cards on my current Trello board"
+   ```
+
+2. **Plan your day with Claude's help**:
+   ```
+   "Based on my current cards, what should I prioritize today?"
+   ```
+
+3. **Create new tasks as needed**:
+   ```
+   "Create cards for implementing user authentication in the 'To Do' list with these subtasks: 
+   1. Set up JWT middleware
+   2. Create login form
+   3. Implement password reset flow"
+   ```
+
+4. **Update progress throughout the day**:
+   ```
+   "Move the 'Create login form' card to 'In Progress'"
+   ```
+
+5. **End of day review**:
+   ```
+   "Show me the recent activity on the board and summarize what was accomplished today"
+   ```
+
 ## Development
 
 ### Prerequisites
@@ -174,7 +310,7 @@ Set the active board for future operations.
 
 1. Clone the repository
    ```bash
-   git clone https://github.com/yourusername/trello-mcp.git
+   git clone https://github.com/xenral/trello-mcp.git
    cd trello-mcp
    ```
 
