@@ -323,6 +323,19 @@ Get a list of all available boards.
 }
 ```
 
+### set_active_workspace
+
+Set the active workspace for future operations.
+
+```json
+{
+  "name": "set_active_workspace",
+  "arguments": {
+    "workspaceId": "string"
+  }
+}
+```
+
 ## Workflow Example: Project Management with Claude and Trello
 
 Here's a complete workflow example of using Claude in Cursor with Trello MCP:
