@@ -8,6 +8,7 @@ import { updateCardDetails } from './update-card-details';
 import { moveCard } from './move-card';
 import { listBoards } from './list-boards';
 import { setActiveBoard } from './set-active-board';
+import { setActiveWorkspace } from './set-active-workspace';
 import { listWorkspaces } from './list-workspaces';
 import { getActiveBoardInfo } from './get-active-board-info';
 
@@ -21,6 +22,7 @@ export const tools: Tool[] = [
   moveCard,
   listBoards,
   setActiveBoard,
+  setActiveWorkspace,
   listWorkspaces,
   getActiveBoardInfo
-]; 
+];

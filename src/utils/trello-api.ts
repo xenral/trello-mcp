@@ -6,22 +6,24 @@ import { TokenBucket } from '../types';
 // Base URL for Trello API
 const API_BASE_URL = 'https://api.trello.com/1';
 
-// Load configuration
-const config = loadConfig();
+// Load initial configuration so we can set up rate limiting buckets. We will
+// reload the configuration inside each function when up-to-date values are
+// required.
+const initialConfig = loadConfig();
 
 // Create token buckets for rate limiting
 // Trello API limits: 300 requests per 10 seconds per API key, 100 requests per 10 seconds per token
 const apiKeyBucket: TokenBucket = {
-  tokens: config.API_KEY_RATE_LIMIT || 300,
+  tokens: initialConfig.API_KEY_RATE_LIMIT || 300,
   lastRefill: Date.now(),
-  capacity: config.API_KEY_RATE_LIMIT || 300,
+  capacity: initialConfig.API_KEY_RATE_LIMIT || 300,
   refillRate: 10000 // 10 seconds in milliseconds
 };
 
 const tokenBucket: TokenBucket = {
-  tokens: config.TOKEN_RATE_LIMIT || 100,
+  tokens: initialConfig.TOKEN_RATE_LIMIT || 100,
   lastRefill: Date.now(),
-  capacity: config.TOKEN_RATE_LIMIT || 100,
+  capacity: initialConfig.TOKEN_RATE_LIMIT || 100,
   refillRate: 10000 // 10 seconds in milliseconds
 };
 
@@ -70,11 +72,14 @@ export async function callTrelloApi<T>(
   params: Record<string, any> = {},
   data: Record<string, any> = {}
 ): Promise<T> {
+  // Load the latest configuration for credentials
+  const { TRELLO_API_KEY, TRELLO_TOKEN } = loadConfig();
+
   // Add API key and token to params
   const apiParams = {
     ...params,
-    key: config.TRELLO_API_KEY,
-    token: config.TRELLO_TOKEN
+    key: TRELLO_API_KEY,
+    token: TRELLO_TOKEN
   };
 
   // Apply rate limiting
@@ -111,18 +116,20 @@ export async function callTrelloApi<T>(
  * Get the active board ID
  */
 export function getActiveBoardId(): string {
-  if (!config.TRELLO_BOARD_ID) {
+  const { TRELLO_BOARD_ID } = loadConfig();
+  if (!TRELLO_BOARD_ID) {
     throw new Error('No active board ID set. Set TRELLO_BOARD_ID in environment or use set_active_board tool');
   }
-  return config.TRELLO_BOARD_ID;
+  return TRELLO_BOARD_ID;
 }
 
 /**
  * Get the active workspace ID
  */
 export function getActiveWorkspaceId(): string {
-  if (!config.TRELLO_WORKSPACE_ID) {
+  const { TRELLO_WORKSPACE_ID } = loadConfig();
+  if (!TRELLO_WORKSPACE_ID) {
     throw new Error('No active workspace ID set. Set TRELLO_WORKSPACE_ID in environment or use set_active_workspace tool');
   }
-  return config.TRELLO_WORKSPACE_ID;
-} 
+  return TRELLO_WORKSPACE_ID;
+}
